@@ -17,3 +17,57 @@ export const createMovie = async (movieData) => {
         }
     }
 }
+
+export const getMovieById = async (movieId) => {
+    try {
+        const movie = await Movie.findById(movieId);
+        return {
+            data: movie,
+            success: true,
+            message: "Movie fetched successfully"
+        }
+    }
+    catch (error) {
+        return {
+            data: {},
+            success: false,
+            message: error.message + "~Repo Layer Error"
+        }
+    }
+}
+
+export const getAllMovies = async () => {
+    try {
+        const movies = await Movie.find();
+        return {
+            data: movies,
+            success: true,
+            message: "Movies fetched successfully"
+        }
+    }
+    catch (error) {
+        return {
+            data: {},
+            success: false,
+            message: error.message + "~Repo Layer Error"
+        }
+    }
+}
+
+export const deleteMovie = async (movieId) => {
+    try {
+        const movie = await Movie.findByIdAndDelete(movieId);
+        return {
+            data: movie.name,
+            success: true,
+            message: "Movie deleted successfully"
+        }
+    }
+    catch (error) {
+        return {
+            data: {},
+            success: false,
+            message: error.message + "~Repo Layer Error"
+        }
+    }
+}

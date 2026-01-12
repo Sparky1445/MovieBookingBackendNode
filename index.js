@@ -11,8 +11,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.get("/home", (req, res) => {
+app.get("/home/:id", (req, res) => {
     console.log('Hitting /home');
+    console.log(req.query, req.params)
     res.json({
         message: "Welcome to the movie booking app",
         success: "True"
