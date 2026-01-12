@@ -3,12 +3,13 @@ import bodyParser from "body-parser";
 import MovieRoute from "./routes/MovieRoute.js";
 import { MONGO_URL, PORT } from "./config/serverConfig.js";
 import ConnectDB from "./config/db_config.js";
-
+import errorHandler from "./errors/errorHandler.js";
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(errorHandler);
 
 
 app.get("/home/:id", (req, res) => {

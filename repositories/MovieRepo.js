@@ -1,4 +1,8 @@
 import Movie from "../schemas/Movie.js";
+import NotFoundError from "../errors/NotFound.js";
+import InternalServerError from "../errors/InternalServerError.js";
+import BadRequest from "../errors/badRequest.js";
+import mongoose from "mongoose";
 
 export const createMovie = async (movieData) => {
     try {
@@ -21,6 +25,12 @@ export const createMovie = async (movieData) => {
 export const getMovieById = async (movieId) => {
     try {
         const movie = await Movie.findById(movieId);
+
+        if (!(mongoose.Types.ObjectId.isValid(movieId))) {
+            throw new NotFoundError(`Movie not found ~ Repo Layer Error`);
+        }
+
+
         return {
             data: movie,
             success: true,
@@ -39,6 +49,12 @@ export const getMovieById = async (movieId) => {
 export const getAllMovies = async () => {
     try {
         const movies = await Movie.find();
+
+        if (!movies) {
+            throw new NotFoundError(`Movies not found ~ Repo Layer Error`);
+        }
+
+
         return {
             data: movies,
             success: true,

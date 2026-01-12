@@ -2,6 +2,10 @@ import { createMovie as createMovieRepository } from "../repositories/MovieRepo.
 import { getMovieById as getMovieByIdRepository } from "../repositories/MovieRepo.js";
 import { getAllMovies as getAllMoviesRepository } from "../repositories/MovieRepo.js";
 import { deleteMovie as deleteMovieRepository } from "../repositories/MovieRepo.js";
+import NotFoundError from "../errors/NotFound.js";
+import InternalServerError from "../errors/InternalServerError.js";
+import BadRequest from "../errors/badRequest.js";
+
 
 export const createMovie = async (movieData) => {
 
@@ -23,6 +27,11 @@ export const createMovie = async (movieData) => {
 export const getMovieById = async (movieId) => {
     try {
         const movieResponse = await getMovieByIdRepository(movieId);
+
+        if (!movieResponse.success) {
+            throw new NotFoundError(`Movie not found ~ Service Layer Error`);
+        }
+
         return movieResponse;
     }
     catch (error) {
