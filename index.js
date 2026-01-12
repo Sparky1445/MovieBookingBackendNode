@@ -1,7 +1,8 @@
 import express from "express";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
+import MovieRoute from "./routes/MovieRoute.js";
 import { MONGO_URL, PORT } from "./config/serverConfig.js";
+import ConnectDB from "./config/db_config.js";
 
 
 const app = express();
@@ -19,15 +20,12 @@ app.get("/home", (req, res) => {
 })
 
 
+//paths
+
+app.use('/mba/api/v1/movies', MovieRoute);
 
 app.listen(PORT, async () => {
     console.log(`Server started on port ${PORT}`);
-    try {
-        await mongoose.connect(MONGO_URL);
-        console.log("MongoDB connected");
-
-    } catch (err) {
-        console.log("Error connecting to the DB", err);
-    }
+    ConnectDB();
 });
 
