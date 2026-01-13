@@ -12,3 +12,5 @@ const movieSchema = z.object({
 })
 
 export default movieSchema;
+
+export const updateMovieSchema = movieSchema.partial().strict();

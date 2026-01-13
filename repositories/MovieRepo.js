@@ -3,6 +3,7 @@ import NotFoundError from "../errors/NotFound.js";
 import InternalServerError from "../errors/InternalServerError.js";
 import BadRequest from "../errors/badRequest.js";
 import mongoose from "mongoose";
+import { success } from "zod";
 
 export const createMovie = async (movieData) => {
     try {
@@ -86,4 +87,34 @@ export const deleteMovie = async (movieId) => {
             message: error.message + "~Repo Layer Error"
         }
     }
+}
+
+export const updateMovie = async (movieId, data) => {
+
+    try {
+        const updatedMovie = await Movie.findByIdAndUpdate(movieId, data, { new: true });
+
+        if (!updatedMovie) {
+            return {
+                success: false,
+                message: "Failed to find the movie, try again! ~ Repo layer",
+                data: {}
+            }
+        }
+        return {
+            success: true,
+            message: "Fetched the movie successfully!",
+            data: updatedMovie
+        }
+
+
+    } catch (err) {
+        return {
+            success: false,
+            message: err.message + "~Repo Layer",
+            data: {}
+        };
+
+    }
+
 }

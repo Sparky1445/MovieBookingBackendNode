@@ -8,6 +8,8 @@ import { createMovie as createMovieService } from "../services/movieService.js";
 import { getMovieById as getMovieByIdService } from "../services/movieService.js";
 import { getAllMovies as getAllMoviesService } from "../services/movieService.js";
 import { deleteMovie as deleteMovieService } from "../services/movieService.js";
+import { updateMovie as updateMovieService } from "../services/movieService.js";
+
 import NotFoundError from "../errors/NotFound.js";
 import InternalServerError from "../errors/InternalServerError.js";
 import BadRequest from "../errors/badRequest.js";
@@ -68,5 +70,16 @@ export const deleteMovie = async (req, res) => {
         return SuccessBody(res, deleteMovieResponse.data, "Movie Deleted Successfully!", 200);
     } catch (error) {
         return ErrorBody(res, error, 500);
+    }
+}
+
+export const updateMovie = async (req, res) => {
+    const response = await updateMovieService(req.params.id, req.body);
+
+    if (response.success) {
+        return SuccessBody(res, response.data, "Movie updated successfully!", 200);
+    }
+    else {
+        return ErrorBody(res, response.error, 500);
     }
 }
