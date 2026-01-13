@@ -9,6 +9,7 @@ import { getMovieById as getMovieByIdService } from "../services/movieService.js
 import { getAllMovies as getAllMoviesService } from "../services/movieService.js";
 import { deleteMovie as deleteMovieService } from "../services/movieService.js";
 import { updateMovie as updateMovieService } from "../services/movieService.js";
+import { getMovieByName as getMovieByNameService } from "../services/movieService.js";
 
 import NotFoundError from "../errors/NotFound.js";
 import InternalServerError from "../errors/InternalServerError.js";
@@ -82,4 +83,27 @@ export const updateMovie = async (req, res) => {
     else {
         return ErrorBody(res, response.error, 500);
     }
+}
+
+export const getMovieByName = async (req, res) => {
+
+    try {
+        const movieResponse = await getMovieByNameService(req.params.name);
+
+        if (movieResponse.success) {
+            return SuccessBody(res, movieResponse.data || {}, "Movie fetched Successfully!", 200);
+        }
+
+        else if (!movieResponse.success) {
+            throw new NotFoundError(movieResponse.message);
+
+        }
+
+
+
+    } catch (error) {
+        return ErrorBody(res, error, 500);
+    }
+
+
 }

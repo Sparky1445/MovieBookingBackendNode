@@ -7,12 +7,17 @@ import { getAllMovies as getAllMoviesController } from "../controllers/MovieCont
 import { deleteMovie as deleteMovieController } from "../controllers/MovieController.js";
 import { updateMovieSchema } from "../validators/zodMovieSchema.js";
 import { updateMovie as updateMovieController } from "../controllers/MovieController.js";
+import { getMovieByName as getMovieByNameController } from "../controllers/MovieController.js";
+
 const router = express.Router();
+
+
 
 router.post('/', zodValidator(movieSchema), createMovieController);
 router.get('/:id', getMovieByIdController);
-router.get('/', getAllMoviesController);
+router.get('/all', getAllMoviesController);
 router.delete('/:id', deleteMovieController);
-router.put("/:id", zodValidator(updateMovieSchema), updateMovieController)
+router.put("/:id", zodValidator(updateMovieSchema), updateMovieController);
+router.get("/name/:name", getMovieByNameController);
 
 export default router;

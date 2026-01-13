@@ -3,6 +3,7 @@ import { getMovieById as getMovieByIdRepository } from "../repositories/MovieRep
 import { getAllMovies as getAllMoviesRepository } from "../repositories/MovieRepo.js";
 import { deleteMovie as deleteMovieRepository } from "../repositories/MovieRepo.js";
 import { updateMovie as updateMovieRepo } from "../repositories/MovieRepo.js";
+import { getMovieByName as getMovieByNameRepository } from "../repositories/MovieRepo.js";
 import NotFoundError from "../errors/NotFound.js";
 import InternalServerError from "../errors/InternalServerError.js";
 import BadRequest from "../errors/badRequest.js";
@@ -80,6 +81,22 @@ export const updateMovie = async (movieId, data) => {
         const updatedMovie = await updateMovieRepo(movieId, data);
 
         return updatedMovie;
+    }
+    catch (error) {
+        return {
+            success: false,
+            message: error.message + "~Service Layer Error",
+            data: {},
+            error: error
+        }
+    }
+}
+
+export const getMovieByName = async (name) => {
+    try {
+        const movieResponse = await getMovieByNameRepository(name);
+        console.log(movieResponse);
+        return movieResponse;
     }
     catch (error) {
         return {

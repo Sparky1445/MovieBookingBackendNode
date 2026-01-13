@@ -118,3 +118,27 @@ export const updateMovie = async (movieId, data) => {
     }
 
 }
+
+export const getMovieByName = async (MovieName) => {
+
+    try {
+        const movie = await Movie.find({ name: MovieName });
+
+        if (movie.length === 0) {
+            throw new NotFoundError("Movie not found");
+        }
+
+        return {
+            data: movie,
+            success: true,
+            message: "Movie fetched successfully"
+        }
+    }
+    catch (error) {
+        return {
+            data: {},
+            success: false,
+            message: error.message + "~Repo Layer"
+        }
+    }
+}
