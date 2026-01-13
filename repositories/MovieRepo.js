@@ -92,7 +92,7 @@ export const deleteMovie = async (movieId) => {
 export const updateMovie = async (movieId, data) => {
 
     try {
-        const updatedMovie = await Movie.findByIdAndUpdate(movieId, data, { new: true });
+        const updatedMovie = await Movie.findByIdAndUpdate(movieId, data, { new: true, runValidators: true });
 
         if (!updatedMovie) {
             return {
