@@ -6,6 +6,12 @@ import { updateTheatre as updateTheatreService } from "../services/TheatreServic
 import SuccessBody from "../Utils/SuccessBody.js";
 import ErrorBody from "../Utils/ErrorBody.js";
 
+/**
+ * @description -> Controller for creating a new theatre
+ * @param {*} req 
+ * @param {*} res Object of created Theatre
+ */
+
 export const createTheatre = async (req, res) => {
     try {
         const theatreResponse = await createTheatreService(req.body);
@@ -25,6 +31,13 @@ export const createTheatre = async (req, res) => {
     }
 }
 
+/**
+ * @description -> Controller for getting a theatre by ID
+ * @param {*} req 
+ * @param {*} res 
+ * @returns -> Searched Theatre
+ */
+
 export const getTheatreById = async (req, res) => {
     try {
         const theatreResponse = await getTheatreByIdService(req.params.id);
@@ -41,6 +54,13 @@ export const getTheatreById = async (req, res) => {
         return ErrorBody(res, err, 500);
     }
 }
+
+/**
+ * @description -> Controller for getting all the theatres
+ * @param {*} req 
+ * @param {*} res 
+ * @returns -> Array of Theatres
+ */
 
 export const getAllTheatres = async (req, res) => {
     try {
@@ -66,12 +86,19 @@ export const updateTheatre = async (req, res) => {
             return SuccessBody(res, theatreResponse.data, theatreResponse.message, 200);
         }
         else if (!theatreResponse.success) {
-            return ErrorBody(res, theatreResponse.error, 500);
+            return ErrorBody(res, theatreResponse.error, 404);
         }
     } catch (err) {
         return ErrorBody(res, err, 500);
     }
 }
+
+/**
+ * @description -> Controller for deleting a theatre
+ * @param {*} req 
+ * @param {*} res 
+ * @returns -> Object of deleted Theatre
+ */
 
 export const deleteTheatre = async (req, res) => {
     try {

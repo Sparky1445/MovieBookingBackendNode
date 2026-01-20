@@ -4,106 +4,64 @@ import { getAllMovies as getAllMoviesRepository } from "../repositories/MovieRep
 import { deleteMovie as deleteMovieRepository } from "../repositories/MovieRepo.js";
 import { updateMovie as updateMovieRepo } from "../repositories/MovieRepo.js";
 import { getMovieByName as getMovieByNameRepository } from "../repositories/MovieRepo.js";
-import NotFoundError from "../errors/NotFound.js";
-import InternalServerError from "../errors/InternalServerError.js";
-import BadRequest from "../errors/badRequest.js";
+import { ServiceLayerBody } from "../Utils/ServiceLayerBody.js";
 
+/**
+ * @description -> Service for creating a new movie
+ * @param {*} movieData 
+ * @returns ->  Movie Object from Repo layer
+ */
 
 export const createMovie = async (movieData) => {
-
-    try {
-        const movieResponse = await createMovieRepository(movieData);
-        return movieResponse;
-    }
-    catch (error) {
-        return {
-            success: false,
-            message: error.message + "~Service Layer Error",
-            data: {},
-            error: error
-        }
-
-    }
+    return ServiceLayerBody(createMovieRepository, movieData);
 }
+
+/**
+ * @description -> Service for getting a movie by ID
+ * @param {*} movieId 
+ * @returns ->  Movie Object from Repo layer
+ */
 
 export const getMovieById = async (movieId) => {
-    try {
-        const movieResponse = await getMovieByIdRepository(movieId);
-
-        if (!movieResponse.success) {
-            throw new NotFoundError(`Movie not found ~ Service Layer Error`);
-        }
-
-        return movieResponse;
-    }
-    catch (error) {
-        return {
-            success: false,
-            message: error.message + "~Service Layer Error",
-            data: {},
-            error: error
-        }
-    }
+    return ServiceLayerBody(getMovieByIdRepository, movieId);
 }
 
-export const getAllMovies = async (req, res) => {
-    try {
-        const movieResponse = await getAllMoviesRepository();
-        return movieResponse;
-    }
-    catch (error) {
-        return {
-            success: false,
-            message: error.message + "~Service Layer Error",
-            data: {},
-            error: error
-        }
-    }
+/**
+ * @description -> Service for getting all movies
+ * @returns ->  Array of Movies from Repo layer
+ */
+
+export const getAllMovies = async () => {
+    return ServiceLayerBody(getAllMoviesRepository);
 }
+
+/**
+ * @description -> Service for deleting a movie
+ * @param {*} movieId 
+ * @returns ->  Deleted movie response from repo layer
+ */
 
 export const deleteMovie = async (movieId) => {
-    try {
-        const movieResponse = await deleteMovieRepository(movieId);
-        return movieResponse;
-    }
-    catch (error) {
-        return {
-            success: false,
-            message: error.message + "~Service Layer Error",
-            data: {},
-            error: error
-        }
-    }
+    return ServiceLayerBody(deleteMovieRepository, movieId);
 }
+
+/**
+ * @description -> Service for updating a movie
+ * @param {*} movieId 
+ * @param {*} data 
+ * @returns -> Updated movie response from repo layer
+ */
 
 export const updateMovie = async (movieId, data) => {
-    try {
-        const updatedMovie = await updateMovieRepo(movieId, data);
-
-        return updatedMovie;
-    }
-    catch (error) {
-        return {
-            success: false,
-            message: error.message + "~Service Layer Error",
-            data: {},
-            error: error
-        }
-    }
+    return ServiceLayerBody(updateMovieRepo, movieId, data);
 }
 
+/**
+ * @description -> Service for getting a movie by name
+ * @param {*} name 
+ * @returns ->  Movie Object from Repo layer
+ */
+
 export const getMovieByName = async (name) => {
-    try {
-        const movieResponse = await getMovieByNameRepository(name);
-        console.log(movieResponse);
-        return movieResponse;
-    }
-    catch (error) {
-        return {
-            success: false,
-            message: error.message + "~Service Layer Error",
-            data: {},
-            error: error
-        }
-    }
+    return ServiceLayerBody(getMovieByNameRepository, name);
 }

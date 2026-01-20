@@ -97,12 +97,13 @@ export const updateTheatre = async (id, theatreData) => {
             data: response,
             message: "Theatre updated successfully"
         }
-    } catch (err) {
+    } catch (error) {
+
         return {
             success: false,
             data: {},
-            error: err,
-            message: err.message + "~Repo Layer Error"
+            error: error,
+            message: error.message + "~Repo Layer Error"
         }
     }
 }

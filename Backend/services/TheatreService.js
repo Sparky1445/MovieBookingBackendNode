@@ -3,127 +3,56 @@ import { getTheatreById as getTheatreByIdRepository } from "../repositories/Thea
 import { getAllTheatres as getAllTheatresRepository } from "../repositories/TheatreRepo.js";
 import { deleteTheatre as deleteTheatreRepository } from "../repositories/TheatreRepo.js";
 import { updateTheatre as updateTheatreRepository } from "../repositories/TheatreRepo.js";
+import { ServiceLayerBody } from "../Utils/ServiceLayerBody.js";
+
+/**
+ * @description -> Service for creating a new theatre
+ * @param {*} theatreData 
+ * @returns ->  Theatre Object from Repo layer
+ */
 
 export const createTheatre = async (theatreData) => {
-    try {
-        const theatreResponse = await createTheatreRepository(theatreData);
 
-        if (theatreResponse.success) {
-            return theatreResponse;
-        }
-        else {
-            return {
-                success: false,
-                error: theatreResponse.error,
-                message: theatreResponse.message
-            }
-        }
-
-    } catch (error) {
-        return {
-            success: false,
-            error: error,
-            message: error + "~Service  Error"
-        }
-    }
+    return ServiceLayerBody(createTheatreRepository, theatreData);
 }
+
+/**
+ * @description -> Service for getting a theatre by ID
+ * @param {*} theatreId 
+ * @returns ->  Theatre Object from Repo layer
+ */
 
 export const getTheatreById = async (theatreId) => {
-    try {
-
-        const theatreResponse = await getTheatreByIdRepository(theatreId);
-
-
-        if (theatreResponse.success) {
-            return theatreResponse;
-        }
-        else if (!theatreResponse.success) {
-            return {
-                success: false,
-                error: theatreResponse.error,
-                message: theatreResponse.message
-            }
-        }
-
-    } catch (error) {
-        return {
-            success: false,
-            error: error,
-            message: error + "~Service  Error"
-        }
-    }
+    return ServiceLayerBody(getTheatreByIdRepository, theatreId);
 }
+
+/**
+ * @description -> Service for getting all the theatres
+ * @returns ->  Array of Theatres from Repo layer
+ */
 
 export const getAllTheatres = async () => {
-    try {
-        const theatreResponse = await getAllTheatresRepository();
-        console.log(theatreResponse);
-
-        if (theatreResponse.success) {
-            return theatreResponse;
-        }
-        else {
-            return {
-                success: false,
-                error: theatreResponse.error,
-                message: theatreResponse.message
-            }
-        }
-
-    }
-    catch (error) {
-        return {
-            success: false,
-            error: error,
-            message: error + "~Service Error"
-        }
-    }
+    return ServiceLayerBody(getAllTheatresRepository);
 
 }
+
+/**
+ * @description -> Service for updating a theatre
+ * @param {*} id 
+ * @param {*} theatreData 
+ * @returns -> 
+ */
 
 export const updateTheatre = async (id, theatreData) => {
-    try {
-        const theatreResponse = await updateTheatreRepository(id, theatreData);
-
-        if (theatreResponse.success) {
-            return theatreResponse;
-        }
-        else {
-            return {
-                success: false,
-                error: theatreResponse.error,
-                message: theatreResponse.message
-            }
-        }
-    } catch (error) {
-        return {
-            success: false,
-            error: error,
-            message: error + "~Service Error"
-        }
-    }
+    return ServiceLayerBody(updateTheatreRepository, id, theatreData);
 }
 
+/**
+ * @description -> Service for deleting a theatre
+ * @param {*} id 
+ * @returns ->  Deleted theatre response from repo layer
+ */
 
 export const deleteTheatre = async (id) => {
-    try {
-        const theatreResponse = await deleteTheatreRepository(id);
-
-        if (theatreResponse.success) {
-            return theatreResponse;
-        }
-        else {
-            return {
-                success: false,
-                error: theatreResponse.error,
-                message: theatreResponse.message
-            }
-        }
-    } catch (error) {
-        return {
-            success: false,
-            error: error,
-            message: error + "~Service Error"
-        }
-    }
+    return ServiceLayerBody(deleteTheatreRepository, id);
 }

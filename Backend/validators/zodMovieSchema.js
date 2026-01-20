@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+/**
+ * @returns -> Zod Object that validates the req body with all the passed criterias
+ */
+
 const movieSchema = z.object({
     name: z.string().min(1, "Name must be at least 1 characters long"),
     description: z.string().min(100, "Description must be at least 100 characters long"),
