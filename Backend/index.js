@@ -27,6 +27,19 @@ app.get("/home/:id", (req, res) => {
 
 app.use('/mba/api/v1/movies', MovieRoute);
 app.use('/mba/api/v1/theatres', TheatreRoute);
+app.get('/', (req, res) => {
+    res.json({
+        message: "Welcome to Movie Booking Backend",
+        success: true
+    })
+})
+
+app.use((req, res) => {
+    res.status(404).json({
+        message: "Not Found",
+        success: "False"
+    })
+})
 
 app.listen(PORT, async () => {
     console.log(`Server started on port ${PORT}`);
