@@ -4,6 +4,10 @@ import { getAllTheatres as getAllTheatresRepository } from "../repositories/Thea
 import { deleteTheatre as deleteTheatreRepository } from "../repositories/TheatreRepo.js";
 import { updateTheatre as updateTheatreRepository } from "../repositories/TheatreRepo.js";
 import { ServiceLayerBody } from "../Utils/ServiceLayerBody.js";
+import { modifyMoviesInTheatre as modifyMoviesInTheatreRepository } from "../repositories/TheatreRepo.js";
+import mongoose from "mongoose";
+
+
 
 /**
  * @description -> Service for creating a new theatre
@@ -55,4 +59,17 @@ export const updateTheatre = async (id, theatreData) => {
 
 export const deleteTheatre = async (id) => {
     return ServiceLayerBody(deleteTheatreRepository, id);
+}
+
+
+export const modifyMoviesInTheatre = async (theatreId, movieIds, operation) => {
+    const movieIdArray = movieIds.split(",").map(id => id.trim()).filter(id => id !== "");
+    const Operation = parseInt(operation);
+
+    const movieIdObjectIdArray = movieIdArray.map((movieId) => new mongoose.Types.ObjectId(movieId));
+
+    const theatreIdObjectId = new mongoose.Types.ObjectId(theatreId);
+
+
+    return ServiceLayerBody(modifyMoviesInTheatreRepository, theatreIdObjectId, movieIdObjectIdArray, Operation);
 }

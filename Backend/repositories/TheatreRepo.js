@@ -2,7 +2,8 @@ import Theatre from "../schemas/Theatre.js";
 import mongoose from "mongoose";
 import NotFoundError from "../errors/NotFound.js";
 import BadRequestError from "../errors/badRequest.js";
-import { id } from "zod/v4/locales";
+import Movie from "../schemas/Movie.js";
+
 
 
 export const createTheatre = async (theatreData) => {
@@ -134,3 +135,53 @@ export const deleteTheatre = async (id) => {
     }
 }
 
+
+export const modifyMoviesInTheatre = async (TheatreId, movieIds, insert) => {
+    try {
+        const theatre = await Theatre.findById(TheatreId);
+
+        if (!theatre) {
+            throw new NotFoundError("Theatre not found ~ Repo Layer Error");
+        }
+
+        for (const movieId of movieIds) {
+            const movie = await Movie.findById(movieId);
+            if (!movie) {
+                throw new NotFoundError(`Movie ${movieId} is Invalid ~ Repo Layer Error`);
+            }
+        }
+
+        if (insert) {
+            movieIds.forEach((movieId) => {
+
+
+                if (theatre.movies.includes(movieId)) {
+                    throw new BadRequestError(`Movie ${movieId} already exists in the theatre ~ Repo Layer Error`);
+                }
+                theatre.movies.push(movieId);
+            })
+        } else {
+            theatre.movies = theatre.movies.pull(...movieIds);
+        }
+
+        await theatre.save();
+        await theatre.populate("movies")
+
+        return {
+            success: true,
+            data: theatre,
+            message: "Movies in Theatre updated successfully"
+        }
+
+
+
+    } catch (error) {
+
+        return {
+            success: false,
+            data: {},
+            error: error,
+            message: error.message + "~Repo Layer Error"
+        }
+    }
+}

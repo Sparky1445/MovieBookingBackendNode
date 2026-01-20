@@ -3,8 +3,10 @@ import { getTheatreById as getTheatreByIdService } from "../services/TheatreServ
 import { getAllTheatres as getAllTheatresService } from "../services/TheatreService.js";
 import { deleteTheatre as deleteTheatreService } from "../services/TheatreService.js";
 import { updateTheatre as updateTheatreService } from "../services/TheatreService.js";
+import { modifyMoviesInTheatre as modifyMoviesInTheatreService } from "../services/TheatreService.js";
 import SuccessBody from "../Utils/SuccessBody.js";
 import ErrorBody from "../Utils/ErrorBody.js";
+import mongoose from "mongoose";
 
 /**
  * @description -> Controller for creating a new theatre
@@ -113,5 +115,24 @@ export const deleteTheatre = async (req, res) => {
 
     } catch (error) {
         return ErrorBody(res, error, 500);
+    }
+}
+
+export const updateMoviesInTheatre = async (req, res) => {
+
+    try {
+
+
+        const theatreResponse = await modifyMoviesInTheatreService(req.params.id, req.body.movieIds, req.body.operation);
+
+        if (theatreResponse.success) {
+            return SuccessBody(res, theatreResponse.data, theatreResponse.message, 200);
+        }
+        else if (!theatreResponse.success) {
+            return ErrorBody(res, theatreResponse.error, 404);
+        }
+    } catch (err) {
+        console.log(err);
+        return ErrorBody(res, err, 500);
     }
 }

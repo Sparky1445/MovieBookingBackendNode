@@ -7,6 +7,8 @@ const theatreSchema = z.object({
     city: z.string().min(3, "Theatre city must be at least 3 characters long"),
     pincode: z.string().min(5, "Theatre pincode must be at least 5 digits long"),
     description: z.string().min(100, "Theatre description must be at least 100 characters long"),
+    movies: z.array(z.string()).optional(),
+
 
 })
 
