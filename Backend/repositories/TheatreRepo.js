@@ -61,9 +61,9 @@ export const getTheatreById = async (id) => {
     }
 }
 
-export const getAllTheatres = async () => {
+export const getAllTheatres = async (query) => {
     try {
-        const theatre = await Theatre.find();
+        const theatre = await Theatre.find(query);
 
         if (!theatre) {
             throw new NotFoundError("Theatres not found ~ Repo Layer Error");
@@ -144,12 +144,6 @@ export const modifyMoviesInTheatre = async (TheatreId, movieIds, insert) => {
             throw new NotFoundError("Theatre not found ~ Repo Layer Error");
         }
 
-        for (const movieId of movieIds) {
-            const movie = await Movie.findById(movieId);
-            if (!movie) {
-                throw new NotFoundError(`Movie ${movieId} is Invalid ~ Repo Layer Error`);
-            }
-        }
 
         if (insert) {
             movieIds.forEach((movieId) => {
@@ -161,6 +155,10 @@ export const modifyMoviesInTheatre = async (TheatreId, movieIds, insert) => {
                 theatre.movies.push(movieId);
             })
         } else {
+            if (theatre.movies.length <= 0) {
+                throw new BadRequestError("No movies found in the theatre ~ Repo Layer Error");
+            }
+
             theatre.movies = theatre.movies.pull(...movieIds);
         }
 

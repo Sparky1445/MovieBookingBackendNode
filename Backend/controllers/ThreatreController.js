@@ -66,7 +66,17 @@ export const getTheatreById = async (req, res) => {
 
 export const getAllTheatres = async (req, res) => {
     try {
-        const theatreResponse = await getAllTheatresService();
+        let query = {};
+
+        if (req.query?.city) {
+            query.city = req.query.city;
+        }
+
+        if (req.query?.pincode) {
+            query.pincode = req.query.pincode;
+        }
+
+        const theatreResponse = await getAllTheatresService(query);
 
         if (theatreResponse.success) {
             return SuccessBody(res, theatreResponse.data, theatreResponse.message, 200);

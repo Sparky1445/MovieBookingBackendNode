@@ -6,7 +6,8 @@ import { updateTheatre as updateTheatreRepository } from "../repositories/Theatr
 import { ServiceLayerBody } from "../Utils/ServiceLayerBody.js";
 import { modifyMoviesInTheatre as modifyMoviesInTheatreRepository } from "../repositories/TheatreRepo.js";
 import mongoose from "mongoose";
-
+import Movie from "../schemas/Movie.js";
+import NotFoundError from "../errors/NotFound.js";
 
 
 /**
@@ -35,8 +36,9 @@ export const getTheatreById = async (theatreId) => {
  * @returns ->  Array of Theatres from Repo layer
  */
 
-export const getAllTheatres = async () => {
-    return ServiceLayerBody(getAllTheatresRepository);
+export const getAllTheatres = async (query) => {
+
+    return ServiceLayerBody(getAllTheatresRepository, query);
 
 }
 
@@ -70,6 +72,12 @@ export const modifyMoviesInTheatre = async (theatreId, movieIds, operation) => {
 
     const theatreIdObjectId = new mongoose.Types.ObjectId(theatreId);
 
+    for (const movieId of movieIdObjectIdArray) {
+        const movie = await Movie.findById(movieId);
+        if (!movie) {
+            throw new NotFoundError(`Movie ${movieId} is Invalid ~ Service Layer Error`);
+        }
+    }
 
     return ServiceLayerBody(modifyMoviesInTheatreRepository, theatreIdObjectId, movieIdObjectIdArray, Operation);
 }
