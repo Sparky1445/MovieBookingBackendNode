@@ -196,3 +196,43 @@ export const modifyMoviesInTheatre = async (TheatreId, movieIds, insert) => {
         }
     }
 }
+
+export const getTheatresByMovieId = async (movieId, query) => {
+    const { page, limit, ...SearchData } = query;
+
+    try {
+
+        const theatreCount = await Theatre.find(SearchData).countDocuments();
+        const remainder = theatreCount % limit;
+        const totalPages = (remainder == 0 ? theatreCount / limit : (theatreCount / limit) + 1);
+
+        if (page <= totalPages) {
+
+            var theatreResponse = await Theatre.find({
+                movies: { $in: [movieId] }, ...SearchData
+            }).skip((page - 1) * limit).limit(limit);
+        } else {
+            throw new InternalServerError("Something Went Wrong.Please check the page number correctly!");
+        }
+
+        if (theatreResponse.length === 0) {
+            throw new NotFoundError("Theatres not found");
+        }
+
+        return {
+            data: theatreResponse,
+            success: true,
+            message: "Theatres fetched successfully"
+        }
+
+    } catch (error) {
+
+        return {
+            data: {},
+            success: false,
+            error: error,
+            message: error.message + "~Repo Layer"
+
+        }
+    }
+}

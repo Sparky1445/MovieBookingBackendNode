@@ -20,4 +20,5 @@ router.delete('/:id', deleteMovieController);
 router.put("/:id", zodValidator(updateMovieSchema), updateMovieController);
 router.get("/name/:name", getMovieByNameController);
 
+
 export default router;

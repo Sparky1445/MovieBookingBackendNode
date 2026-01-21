@@ -65,3 +65,4 @@ export const updateMovie = async (movieId, data) => {
 export const getMovieByName = async (name) => {
     return ServiceLayerBody(getMovieByNameRepository, name);
 }
+

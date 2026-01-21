@@ -1,7 +1,7 @@
 const ErrorBody = (res, error, statusCode) => {
     return res.status(statusCode).json({
         success: false,
-        statusCode: statusCode,
+        statusCode: error.statusCode || statusCode,
         message: error.message,
         error: error
 
