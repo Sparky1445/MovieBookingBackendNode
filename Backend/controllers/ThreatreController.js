@@ -6,7 +6,8 @@ import { updateTheatre as updateTheatreService } from "../services/TheatreServic
 import { modifyMoviesInTheatre as modifyMoviesInTheatreService } from "../services/TheatreService.js";
 import SuccessBody from "../Utils/SuccessBody.js";
 import ErrorBody from "../Utils/ErrorBody.js";
-import mongoose from "mongoose";
+import { queryResolver } from "../Utils/queryResolver.js";
+
 
 /**
  * @description -> Controller for creating a new theatre
@@ -66,15 +67,8 @@ export const getTheatreById = async (req, res) => {
 
 export const getAllTheatres = async (req, res) => {
     try {
-        let query = {};
+        let query = queryResolver(req.query);
 
-        if (req.query?.city) {
-            query.city = req.query.city;
-        }
-
-        if (req.query?.pincode) {
-            query.pincode = req.query.pincode;
-        }
 
         const theatreResponse = await getAllTheatresService(query);
 

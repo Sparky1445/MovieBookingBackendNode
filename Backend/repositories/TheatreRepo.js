@@ -2,7 +2,7 @@ import Theatre from "../schemas/Theatre.js";
 import mongoose from "mongoose";
 import NotFoundError from "../errors/NotFound.js";
 import BadRequestError from "../errors/badRequest.js";
-import Movie from "../schemas/Movie.js";
+import InternalServerError from "../errors/InternalServerError.js";
 
 
 
@@ -62,8 +62,21 @@ export const getTheatreById = async (id) => {
 }
 
 export const getAllTheatres = async (query) => {
+
+    const { page, limit, ...SearchData } = query;
+
     try {
-        const theatre = await Theatre.find(query);
+
+        const theatreCount = await Theatre.find(SearchData).countDocuments();
+        const remainder = theatreCount % limit;
+        const totalPages = (remainder == 0 ? theatreCount / limit : (theatreCount / limit) + 1);
+
+        if (page <= totalPages) {
+
+            var theatre = await Theatre.find(SearchData).skip((page - 1) * limit).limit(limit);
+        } else {
+            throw new InternalServerError("Something Went Wrong.Please check the page number correctly!");
+        }
 
         if (!theatre) {
             throw new NotFoundError("Theatres not found ~ Repo Layer Error");
