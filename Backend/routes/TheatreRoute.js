@@ -7,16 +7,19 @@ import { updateTheatre as updateTheatreController } from "../controllers/Threatr
 import { updateTheatreSchema } from "../validators/zodTheatreSchema.js";
 import { updateMoviesInTheatre as updateMoviesInTheatreController } from "../controllers/ThreatreController.js";
 import { getTheatresByMovieId as getTheatresByMovieIdController } from "../controllers/ThreatreController.js";
+import { getMoviesInTheatre as getMoviesInTheatreController } from "../controllers/ThreatreController.js";
+import { isLoggedIn } from "../validators/authValidator.js";
 
 const Router = express.Router();
 
-Router.post("/", createTheatreController);
-Router.get("/:id", getTheatreController);
-Router.get("/", getAllTheatresController);
+Router.post("/", isLoggedIn, createTheatreController);
+Router.get("/:id", isLoggedIn, getTheatreController);
+Router.get("/", isLoggedIn, getAllTheatresController);
 Router.delete("/:id", deleteTheatreController);
 Router.patch("/:id", validateTheatre(updateTheatreSchema), updateTheatreController);
 Router.patch("/:id/movies", updateMoviesInTheatreController);
-Router.get("/movies/:id", getTheatresByMovieIdController);
+Router.get("/movie/:id", getTheatresByMovieIdController);
+Router.get("/:id/movies", getMoviesInTheatreController);
 
 
 export default Router;

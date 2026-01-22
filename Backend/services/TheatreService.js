@@ -6,6 +6,7 @@ import { updateTheatre as updateTheatreRepository } from "../repositories/Theatr
 import { ServiceLayerBody } from "../Utils/ServiceLayerBody.js";
 import { modifyMoviesInTheatre as modifyMoviesInTheatreRepository } from "../repositories/TheatreRepo.js";
 import { getTheatresByMovieId as getTheatresByMovieIdRepository } from "../repositories/TheatreRepo.js";
+import { getMoviesInTheatre as getMoviesInTheatreRepository } from "../repositories/TheatreRepo.js";
 import mongoose from "mongoose";
 import Movie from "../schemas/Movie.js";
 import NotFoundError from "../errors/NotFound.js";
@@ -88,4 +89,8 @@ export const getTheatresByMovieId = async (movieId, query) => {
 
 
     return ServiceLayerBody(getTheatresByMovieIdRepository, movieId, query);
+}
+
+export const getMoviesInTheatre = async (theatreId, query) => {
+    return ServiceLayerBody(getMoviesInTheatreRepository, theatreId, query);
 }

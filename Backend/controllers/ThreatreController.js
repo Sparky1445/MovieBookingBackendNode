@@ -5,6 +5,7 @@ import { deleteTheatre as deleteTheatreService } from "../services/TheatreServic
 import { updateTheatre as updateTheatreService } from "../services/TheatreService.js";
 import { modifyMoviesInTheatre as modifyMoviesInTheatreService } from "../services/TheatreService.js";
 import { getTheatresByMovieId as getTheatresByMovieIdService } from "../services/TheatreService.js";
+import { getMoviesInTheatre as getMoviesInTheatreService } from "../services/TheatreService.js";
 
 import SuccessBody from "../Utils/SuccessBody.js";
 import ErrorBody from "../Utils/ErrorBody.js";
@@ -156,6 +157,23 @@ export const getTheatresByMovieId = async (req, res) => {
             return ErrorBody(res, response.error, 500);
         }
 
+
+    } catch (error) {
+        return ErrorBody(res, error, 500);
+    }
+}
+
+export const getMoviesInTheatre = async (req, res) => {
+    try {
+        const query = queryResolver(req.query);
+        const response = await getMoviesInTheatreService(req.params.id, query);
+
+        if (response.success) {
+            return SuccessBody(res, response.data, "Movies fetched Successfully!", 200);
+        }
+        else {
+            return ErrorBody(res, response.error, 500);
+        }
 
     } catch (error) {
         return ErrorBody(res, error, 500);

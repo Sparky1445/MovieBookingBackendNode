@@ -176,7 +176,7 @@ export const modifyMoviesInTheatre = async (TheatreId, movieIds, insert) => {
         }
 
         await theatre.save();
-        await theatre.populate("movies")
+        await theatre.populate("movies");
 
         return {
             success: true,
@@ -223,6 +223,49 @@ export const getTheatresByMovieId = async (movieId, query) => {
             data: theatreResponse,
             success: true,
             message: "Theatres fetched successfully"
+        }
+
+    } catch (error) {
+
+        return {
+            data: {},
+            success: false,
+            error: error,
+            message: error.message + "~Repo Layer"
+
+        }
+    }
+}
+
+export const getMoviesInTheatre = async (theatreId, query) => {
+    const { page, limit, movieId, ...SearchData } = query;
+
+    try {
+
+        const theatreCount = await Theatre.find({ _id: theatreId, ...SearchData }).countDocuments();
+        const remainder = theatreCount % limit;
+        const totalPages = (remainder == 0 ? theatreCount / limit : (theatreCount / limit) + 1);
+
+        if (page <= totalPages) {
+
+            var theatreResponse = await Theatre.find({
+                _id: theatreId, ...SearchData
+            }, { movies: 1, name: 1, address: 1 }).populate("movies").skip((page - 1) * limit).limit(limit);
+        } else {
+            throw new InternalServerError("Something Went Wrong.Please check the page number correctly!");
+        }
+
+        if (theatreResponse[0].movies.length === 0) {
+            throw new NotFoundError(`No Movies found for Theatre ${theatreResponse[0].name} at ${theatreResponse[0].address}`);
+        }
+        const movieList = theatreResponse[0].movies.map(movie => {
+            return movie.name;
+        })
+
+        return {
+            data: theatreResponse,
+            success: true,
+            message: "Movies fetched successfully"
         }
 
     } catch (error) {
