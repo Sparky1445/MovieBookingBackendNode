@@ -4,6 +4,7 @@ import InternalServerError from "../errors/InternalServerError.js";
 import BadRequest from "../errors/badRequest.js";
 import mongoose from "mongoose";
 import { success } from "zod";
+import Theatre from "../schemas/Theatre.js";
 
 export const createMovie = async (movieData) => {
     try {
@@ -27,21 +28,28 @@ export const getMovieById = async (movieId) => {
     try {
         const movie = await Movie.findById(movieId);
 
-        if (!(mongoose.Types.ObjectId.isValid(movieId))) {
-            throw new NotFoundError(`Movie not found ~ Repo Layer Error`);
+        if (!mongoose.Types.ObjectId.isValid(movieId)) {
+            throw new BadRequestError("Invalid Movie ID ~ Repo Layer Error");
         }
 
 
-        return {
-            data: movie,
-            success: true,
-            message: "Movie fetched successfully"
+        if (movie) {
+            return {
+                success: true,
+                data: movie,
+                message: "Movie fetched successfully!!"
+            }
+        }
+        else {
+
+            throw new NotFoundError("Movie not found ~ Repo Layer Error");
         }
     }
     catch (error) {
         return {
-            data: {},
             success: false,
+            data: {},
+            error: error,
             message: error.message + "~Repo Layer Error"
         }
     }
@@ -93,14 +101,12 @@ export const updateMovie = async (movieId, data) => {
 
     try {
         const updatedMovie = await Movie.findByIdAndUpdate(movieId, data, { new: true, runValidators: true });
+        console.log(updatedMovie);
 
         if (!updatedMovie) {
-            return {
-                success: false,
-                message: "Failed to find the movie, try again! ~ Repo layer",
-                data: {}
-            }
+            throw new NotFoundError("Movie not found ~ Repo Layer Error");
         }
+
         return {
             success: true,
             message: "Fetched the movie successfully!",
@@ -108,12 +114,13 @@ export const updateMovie = async (movieId, data) => {
         }
 
 
-    } catch (err) {
+    } catch (error) {
         return {
             success: false,
-            message: err.message + "~Repo Layer",
-            data: {}
-        };
+            data: {},
+            error: error,
+
+        }
 
     }
 
@@ -142,3 +149,4 @@ export const getMovieByName = async (MovieName) => {
         }
     }
 }
+

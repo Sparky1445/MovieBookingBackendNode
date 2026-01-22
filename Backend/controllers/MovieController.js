@@ -39,12 +39,11 @@ export const getMovieById = async (req, res, next) => {
         }
 
         else if (!movieResponse.success) {
-            throw new NotFoundError("Movie not found ~ Controller Layer Error");
-
+            return ErrorBody(res, movieResponse.error, 404);
 
         }
     } catch (error) {
-        next(error);
+        return ErrorBody(res, error, 500);
     }
 }
 
@@ -81,6 +80,7 @@ export const updateMovie = async (req, res) => {
         return SuccessBody(res, response.data, "Movie updated successfully!", 200);
     }
     else {
+        console.log(response.error);
         return ErrorBody(res, response.error, 500);
     }
 }
@@ -107,3 +107,4 @@ export const getMovieByName = async (req, res) => {
 
 
 }
+

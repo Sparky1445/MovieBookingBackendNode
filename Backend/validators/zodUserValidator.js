@@ -1,8 +1,9 @@
+import zodUserSchema from './zodUserSchema.js';
 
-const validator = (schema) => {
+export const zodUserValidator = (zodUserSchema) => {
     return (req, res, next) => {
         try {
-            schema.parse(req.body);
+            zodUserSchema.parse(req.body);
             next();
         }
         catch (error) {
@@ -20,6 +21,6 @@ const validator = (schema) => {
             })
         }
     }
-}
 
-export default validator;
+
+}

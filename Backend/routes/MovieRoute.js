@@ -15,9 +15,10 @@ const router = express.Router();
 
 router.post('/', zodValidator(movieSchema), createMovieController);
 router.get('/:id', getMovieByIdController);
-router.get('/all', getAllMoviesController);
+router.get('/', getAllMoviesController);
 router.delete('/:id', deleteMovieController);
 router.put("/:id", zodValidator(updateMovieSchema), updateMovieController);
 router.get("/name/:name", getMovieByNameController);
+
 
 export default router;
