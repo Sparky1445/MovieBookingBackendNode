@@ -37,10 +37,7 @@ export const isLoggedIn = async (req, res, next) => {
 }
 
 export const isAdmin = async (req, res, next) => {
-
-
     const token = req.cookies?.authToken;
-
 
     if (!token) {
         return ErrorBody(res, "Please Login First!", 400);
@@ -48,11 +45,38 @@ export const isAdmin = async (req, res, next) => {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
-
-
     if (decoded.role != "ADMIN") {
         return ErrorBody(res, "Unauthorized! You are not an Admin!", 401);
     }
+    next();
+}
 
+export const isClient = async (req, res, next) => {
+    const token = req.cookies?.authToken;
+
+    if (!token) {
+        return ErrorBody(res, "Please Login First!", 400);
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    if (decoded.role != "CLIENT") {
+        return ErrorBody(res, "Unauthorized! You are not a Client!", 401);
+    }
+    next();
+}
+
+export const isAdminOrClient = async (req, res, next) => {
+    const token = req.cookies?.authToken;
+
+    if (!token) {
+        return ErrorBody(res, "Please Login First!", 400);
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    if (decoded.role != "ADMIN" && decoded.role != "CLIENT") {
+        return ErrorBody(res, "Unauthorized! You are not a Admin or Client!", 401);
+    }
     next();
 }

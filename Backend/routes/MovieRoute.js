@@ -8,16 +8,18 @@ import { deleteMovie as deleteMovieController } from "../controllers/MovieContro
 import { updateMovieSchema } from "../validators/zodMovieSchema.js";
 import { updateMovie as updateMovieController } from "../controllers/MovieController.js";
 import { getMovieByName as getMovieByNameController } from "../controllers/MovieController.js";
+import { isLoggedIn } from "../validators/authValidator.js";
+import { isAdmin } from "../validators/authValidator.js";
 
 const router = express.Router();
 
 
 
-router.post('/', zodValidator(movieSchema), createMovieController);
+router.post('/', isLoggedIn, isAdmin, zodValidator(movieSchema), createMovieController);
 router.get('/:id', getMovieByIdController);
 router.get('/', getAllMoviesController);
-router.delete('/:id', deleteMovieController);
-router.put("/:id", zodValidator(updateMovieSchema), updateMovieController);
+router.delete('/:id', isLoggedIn, isAdmin, deleteMovieController);
+router.put("/:id", isLoggedIn, isAdmin, zodValidator(updateMovieSchema), updateMovieController);
 router.get("/name/:name", getMovieByNameController);
 
 

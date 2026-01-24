@@ -8,18 +8,20 @@ import { updateTheatreSchema } from "../validators/zodTheatreSchema.js";
 import { updateMoviesInTheatre as updateMoviesInTheatreController } from "../controllers/ThreatreController.js";
 import { getTheatresByMovieId as getTheatresByMovieIdController } from "../controllers/ThreatreController.js";
 import { getMoviesInTheatre as getMoviesInTheatreController } from "../controllers/ThreatreController.js";
-import { isLoggedIn } from "../validators/authValidator.js";
-
+import { isAdmin, isLoggedIn } from "../validators/authValidator.js";
+import theatreSchema from "../validators/zodTheatreSchema.js";
+import { isAdminOrClient } from "../validators/authValidator.js";
+import { isClient } from "../validators/authValidator.js";
 const Router = express.Router();
 
-Router.post("/", isLoggedIn, createTheatreController);
-Router.get("/:id", isLoggedIn, getTheatreController);
-Router.get("/", isLoggedIn, getAllTheatresController);
-Router.delete("/:id", deleteTheatreController);
-Router.patch("/:id", validateTheatre(updateTheatreSchema), updateTheatreController);
-Router.patch("/:id/movies", updateMoviesInTheatreController);
-Router.get("/movie/:id", getTheatresByMovieIdController);
-Router.get("/:id/movies", getMoviesInTheatreController);
+Router.post("/", isLoggedIn, isAdmin, validateTheatre(theatreSchema), createTheatreController);
+Router.get("/:id", isLoggedIn, isAdminOrClient, getTheatreController);
+Router.get("/", isLoggedIn, isAdminOrClient, getAllTheatresController);
+Router.delete("/:id", isLoggedIn, isAdmin, deleteTheatreController);
+Router.patch("/:id", isLoggedIn, isAdminOrClient, validateTheatre(updateTheatreSchema), updateTheatreController);
+Router.patch("/:id/movies", isLoggedIn, isAdminOrClient, updateMoviesInTheatreController);
+Router.get("/movie/:id", isLoggedIn, getTheatresByMovieIdController);
+Router.get("/:id/movies", isLoggedIn, getMoviesInTheatreController);
 
 
 export default Router;
