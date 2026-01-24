@@ -32,7 +32,7 @@ app.get("/home/:id", (req, res) => {
 
 app.use('/mba/api/v1/movies', MovieRoute);
 app.use('/mba/api/v1/theatres', TheatreRoute);
-app.use('/mba/api/v1/auth/login', authRoute);
+app.use('/mba/api/v1/auth', authRoute);
 app.use('/mba/api/v1/user', userRoute);
 
 app.get('/', (req, res) => {
