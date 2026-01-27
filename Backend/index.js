@@ -9,6 +9,7 @@ import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js"
 import cookieParser from "cookie-parser";
 import bookingRoute from "./routes/bookingRoute.js";
+import showRoute from "./routes/showRoute.js";
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/mba/api/v1/movies', MovieRoute);
 app.use('/mba/api/v1/theatres', TheatreRoute);
 app.use('/mba/api/v1/auth', authRoute);
 app.use('/mba/api/v1/user', userRoute);
+app.use('/mba/api/v1/shows', showRoute);
 app.use('/mba/api/v1/booking', bookingRoute);
 
 app.get('/', (req, res) => {
