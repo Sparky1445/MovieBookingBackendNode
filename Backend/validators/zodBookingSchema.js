@@ -12,3 +12,11 @@ const bookingSchema = z.object({
 })
 
 export default bookingSchema;
+
+export const updateBookingSchema = bookingSchema.omit({
+    movieId: true,
+    theatreId: true,
+    timing: true,
+    seats: true,
+    noOfSeats: true,
+}).partial().strict();

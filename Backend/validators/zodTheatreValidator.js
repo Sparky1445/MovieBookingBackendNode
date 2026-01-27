@@ -1,3 +1,4 @@
+import { ValidationErrorBody } from "../Utils/ValidationErrorBody.js";
 
 export const validateTheatre = (schema) => {
     return (req, res, next) => {
@@ -6,18 +7,7 @@ export const validateTheatre = (schema) => {
             next();
         }
         catch (error) {
-            const parsed = JSON.parse(error);
-            const ErrArray = parsed.map((errObj) => ({
-                [errObj.path[0]]: errObj.message
-            }));
-
-            return res.status(400).json({
-                success: false,
-                message: "Validation error",
-                statusCode: 400,
-                data: {},
-                error: ErrArray
-            })
+            return ValidationErrorBody(res, error, 400);
         }
     }
 

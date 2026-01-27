@@ -5,6 +5,10 @@ import Theatre from "../schemas/Theatre.js";
 import NotFoundError from "../errors/NotFound.js";
 import Booking from "../schemas/Booking.js";
 import BadRequestError from "../errors/badRequest.js";
+import { updateBooking as updateBookingRepository } from "../repositories/BookingRepo.js";
+import { cancelBooking as cancelBookingRepository } from "../repositories/BookingRepo.js";
+import { getBookings as getBookingsRepository } from "../repositories/BookingRepo.js";
+import { getBookingsByData as getBookingsByDataRepository } from "../repositories/BookingRepo.js";
 
 export const createBooking = async (bookingDetails) => {
     try {
@@ -35,7 +39,7 @@ export const createBooking = async (bookingDetails) => {
         const bookedSeatsIssue = [];
 
         for (const seat of bookingDetails.seats) {
-            const count = await Booking.countDocuments({ movieId: bookingDetails.movieId, theatreId: bookingDetails.theatreId, timing: bookingDetails.timing, seats: seat });
+            const count = await Booking.countDocuments({ $or: [{ status: "CONFIRMED" }, { status: "IN_PROGRESS" }], movieId: bookingDetails.movieId, theatreId: bookingDetails.theatreId, timing: bookingDetails.timing, seats: seat });
             if (count > 0) {
                 bookedSeatsIssue.push(seat);
             }
@@ -57,4 +61,20 @@ export const createBooking = async (bookingDetails) => {
             message: error.message + "~Service layer Error"
         }
     }
+}
+
+export const updateBooking = async (bookingId, status) => {
+    return ServiceLayerBody(updateBookingRepository, bookingId, status);
+}
+
+export const cancelBooking = async (bookingId) => {
+    return ServiceLayerBody(cancelBookingRepository, bookingId);
+}
+
+export const getAllBookings = async (userId) => {
+    return ServiceLayerBody(getBookingsRepository, userId);
+}
+
+export const getBookingsByData = async (id, bookingData) => {
+    return ServiceLayerBody(getBookingsByDataRepository, id, bookingData);
 }

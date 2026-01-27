@@ -4,20 +4,17 @@ import { createBooking as createBookingService } from "../services/BookingServic
 import SuccessBody from "../Utils/SuccessBody.js";
 import ErrorBody from "../Utils/ErrorBody.js";
 import mongoose from "mongoose";
-import Theatre from "../schemas/Theatre.js";
-import NotFoundError from "../errors/NotFound.js";
+import { updateBooking as updateBookingService } from "../services/BookingService.js";
+import UnauthorizedError from "../errors/Unauthorized.js";
+import Booking from "../schemas/Booking.js";
+import { cancelBooking as cancelBookingService } from "../services/BookingService.js";
+import { getAllBookings as getBookingsService } from "../services/BookingService.js";
+import { getBookingsByData as getBookingsByDataService } from "../services/BookingService.js";
 
 
 export const createBooking = async (req, res) => {
 
     const token = req.cookies.authToken;
-
-    if (!token) {
-        return ErrorBody(res, "Please Login First!", 401);
-    }
-
-
-
     const decodedToken = jwt.verify(token, JWT_SECRET);
 
     let { totalCost, noOfSeats, seats, theatreId, movieId, ...omittedBody } = req.body;
@@ -40,5 +37,90 @@ export const createBooking = async (req, res) => {
     }
     else {
         return ErrorBody(res, bookingResponse.error, 500);
+    }
+}
+
+export const updateBooking = async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        console.log(id, status);
+
+        const bookingResponse = await updateBookingService(id, status);
+
+        if (bookingResponse.success) {
+            return SuccessBody(res, bookingResponse.data, "Booking updated successfully!", 200);
+        }
+        else {
+            return ErrorBody(res, bookingResponse.error, 500);
+        }
+
+    } catch (error) {
+        return ErrorBody(res, error, 500);
+    }
+
+}
+
+export const cancelBooking = async (req, res) => {
+    try {
+        const theatreId = await Booking.findById(req.params.id, { userId: 1 });
+        const token = jwt.verify(req.cookies.authToken, JWT_SECRET);
+        const id = req.params.id;
+        console.log(id, theatreId.userId.toString(), token.userId);
+
+        if (token.userId !== theatreId.userId.toString()) {
+            throw new UnauthorizedError("you are not allowed to cancel this booking!!!");
+        }
+
+        const bookingResponse = await cancelBookingService(id);
+
+        if (bookingResponse.success) {
+            return SuccessBody(res, bookingResponse.data, "Booking updated successfully!", 200);
+        }
+        else {
+            return ErrorBody(res, bookingResponse.error, 500);
+        }
+
+
+    } catch (error) {
+        return ErrorBody(res, error, 500);
+    }
+}
+
+export const getBookings = async (req, res) => {
+    try {
+        const token = req.cookies.authToken;
+        const decodedToken = jwt.verify(token, JWT_SECRET);
+
+        const userId = decodedToken.userId;
+
+        const bookingResponse = await getBookingsService(userId);
+
+        if (bookingResponse.success) {
+            return SuccessBody(res, bookingResponse.data, "Bookings fetched successfully!", 200);
+        }
+        else {
+            return ErrorBody(res, bookingResponse.error, 500);
+        }
+    } catch (error) {
+        return ErrorBody(res, error, 500);
+    }
+
+}
+
+export const getBookingsByData = async (req, res) => {
+    try {
+        const bookingResponse = await getBookingsByDataService(req.params.userId, req.body);
+
+        if (bookingResponse.success) {
+            return SuccessBody(res, bookingResponse.data, "Bookings fetched successfully!", 200);
+        }
+        else {
+            return ErrorBody(res, bookingResponse.error, 500);
+        }
+    } catch (error) {
+        return ErrorBody(res, error, 500);
     }
 }

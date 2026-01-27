@@ -1,4 +1,5 @@
-
+import { updateBooking } from "../repositories/BookingRepo.js";
+import { ValidationErrorBody } from "../Utils/ValidationErrorBody.js";
 
 export const validateBooking = (bookingSchema) => {
     return (req, res, next) => {
@@ -16,19 +17,20 @@ export const validateBooking = (bookingSchema) => {
 
 
         } catch (error) {
-            const parsed = JSON.parse(error);
-            const ErrArray = parsed.map((errObj) => ({
-                [errObj.path[0]]: errObj.message
-            }));
-
-            return res.status(400).json({
-                success: false,
-                message: "Validation error",
-                statusCode: 400,
-                data: {},
-                error: ErrArray
-            })
+            return ValidationErrorBody(res, error, 400);
         }
 
+    }
+}
+
+export const validateBookingUpdation = (updateBookingSchema) => {
+    return (req, res, next) => {
+        try {
+            updateBookingSchema.parse(req.body);
+            next();
+
+        } catch (error) {
+            return ValidationErrorBody(res, error, 400);
+        }
     }
 }
