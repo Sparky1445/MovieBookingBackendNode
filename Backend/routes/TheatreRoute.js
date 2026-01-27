@@ -11,12 +11,11 @@ import { getMoviesInTheatre as getMoviesInTheatreController } from "../controlle
 import { isAdmin, isLoggedIn } from "../validators/authValidator.js";
 import theatreSchema from "../validators/zodTheatreSchema.js";
 import { isAdminOrClient } from "../validators/authValidator.js";
-import { isClient } from "../validators/authValidator.js";
 const Router = express.Router();
 
 Router.post("/", isLoggedIn, isAdmin, validateTheatre(theatreSchema), createTheatreController);
-Router.get("/:id", isLoggedIn, isAdminOrClient, getTheatreController);
-Router.get("/", isLoggedIn, isAdminOrClient, getAllTheatresController);
+Router.get("/:id", isLoggedIn, getTheatreController);
+Router.get("/", isLoggedIn, getAllTheatresController);
 Router.delete("/:id", isLoggedIn, isAdmin, deleteTheatreController);
 Router.patch("/:id", isLoggedIn, isAdminOrClient, validateTheatre(updateTheatreSchema), updateTheatreController);
 Router.patch("/:id/movies", isLoggedIn, isAdminOrClient, updateMoviesInTheatreController);

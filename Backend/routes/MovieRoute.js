@@ -16,11 +16,11 @@ const router = express.Router();
 
 
 router.post('/', isLoggedIn, isAdmin, zodValidator(movieSchema), createMovieController);
-router.get('/:id', getMovieByIdController);
-router.get('/', getAllMoviesController);
+router.get('/:id', isLoggedIn, getMovieByIdController);
+router.get('/', isLoggedIn, getAllMoviesController);
 router.delete('/:id', isLoggedIn, isAdmin, deleteMovieController);
 router.put("/:id", isLoggedIn, isAdmin, zodValidator(updateMovieSchema), updateMovieController);
-router.get("/name/:name", getMovieByNameController);
+router.get("/name/:name", isLoggedIn, getMovieByNameController);
 
 
 export default router;
