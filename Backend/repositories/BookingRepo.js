@@ -1,4 +1,5 @@
 import Booking from "../schemas/Booking.js";
+import { createPayment as createPaymentRepo } from "./paymentRepo.js";
 
 export const createBooking = async (bookingDetails) => {
     try {
@@ -7,6 +8,25 @@ export const createBooking = async (bookingDetails) => {
         if (!booking) {
             throw new Error("Booking not created ~ Repo Layer Error");
         }
+
+        const payment = await createPaymentRepo({
+            bookingId: booking._id,
+            userId: booking.userId,
+            amount: booking.totalCost,
+            status: "success"
+        })
+
+
+        if (!payment) {
+            booking.status = "CANCELLED";
+            await booking.save();
+
+            throw new InternalServerError("Failed to create Payment for the booking ~ Repo Layer Error");
+        }
+
+        booking.paymentId = payment.data._id;
+        booking.status = "CONFIRMED";
+        await booking.save();
 
         return {
             data: booking,

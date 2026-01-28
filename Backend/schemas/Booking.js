@@ -19,10 +19,16 @@ const bookingSchema = new mongoose.Schema({
         required: true,
         ref: "User"
     },
+    showId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Show"
+    },
 
     timing: {
         type: String,
         required: true
+
     },
 
     noOfSeats: {

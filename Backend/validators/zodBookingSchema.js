@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 const bookingSchema = z.object({
     movieId: z.string().refine((value) => mongoose.Types.ObjectId.isValid(value), "Invalid Movie ID"),
     theatreId: z.string().refine((value) => mongoose.Types.ObjectId.isValid(value), "Invalid Theatre ID"),
-    timing: z.string(),
+    showId: z.string().refine((value) => mongoose.Types.ObjectId.isValid(value), "Invalid Show ID"),
+    timing: z.string().optional(),
     seats: z.array(z.string()).min(1, "At least one seat is required"),
     noOfSeats: z.number().min(1, "At least one seat is required"),
     totalCost: z.number().min(0, "Total cost cannot be negative"),

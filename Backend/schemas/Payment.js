@@ -11,6 +11,7 @@ const paymentSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+
     amount: {
         type: Number,
         required: true
@@ -18,7 +19,8 @@ const paymentSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["pending", "success", "failed"],
-        default: "pending"
+        default: "pending",
+        message: "Invalid status"
     }
 }, {
     timestamps: true
