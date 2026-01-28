@@ -1,8 +1,9 @@
-import NotFoundError from "../Utils/ErrorBody.js";
-import InternalServerError from "../Utils/ErrorBody.js";
+import NotFoundError from "../errors/NotFound.js";
+import InternalServerError from "../errors/InternalServerError.js";
 import Payment from "../schemas/Payment.js";
 import Booking from "../schemas/Booking.js";
 import mongoose from "mongoose";
+import User from "../schemas/User.js"
 
 export const getPayments = async (userId) => {
     try {
@@ -10,13 +11,19 @@ export const getPayments = async (userId) => {
             throw new NotFoundError("Invalid user Id!!");
         }
 
-        const User = await User.findById(userId);
+        const user = await User.findById(userId);
 
-        if (!User) {
+        if (!user) {
             throw new NotFoundError("User does not exist!!");
         }
 
-        const payments = await Payment.find({ userId });
+        const payments = await Payment.find({ userId }).populate(
+            {
+                path: ['bookingId', 'userId'],
+
+                strictPopulate: false
+            }
+        );
 
         if (!payments) {
             throw new NotFoundError("Uhhu!!No payments found for this user, Lets get you onboard");
@@ -52,11 +59,46 @@ export const createPayment = async (paymentData) => {
             throw new InternalServerError("Failed to create payment");
         }
 
+
+        const booking = await Booking.findById(paymentData.bookingId);
+
+        if (booking.status == "CONFIRMED" || booking.status == "CANCELLED") {
+            throw new InternalServerError("Cant make new payment against this booking!");
+        }
+
+        let bookingTime = booking.createdAt;
+        let currentTime = Date.now();
+
+        let minutes = Math.floor(((currentTime - bookingTime) / 1000) / 60);
+
+        if (minutes > 5) {
+            booking.status = 'CANCELLED';
+            await booking.save();
+
+            throw new BadRequestError("Booking time expired!!!");
+
+        }
+
+        if (booking.status == "IN_PROGRESS" && booking.totalCost == payment.amount) {
+            booking.status = "CONFIRMED";
+            await booking.save();
+        }
+
+
+
+
+
+        payment.status = "success";
+        await payment.save();
+
+
         return {
             success: true,
             message: "Payment created successfully",
             data: payment
         }
+
+
     } catch (error) {
         return {
             success: false,

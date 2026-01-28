@@ -6,6 +6,10 @@ export const zodPaymentSchema = z.object({
         message: "Invalid booking ID"
     }),
     amount: z.number(),
-    status: z.enum(["pending", "success", "failed"]),
+    status: z.enum(["pending", "success", "failed"]).default("pending"),
+    userId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+        message: "Invalid user ID"
+    }).optional()
 })
+
 

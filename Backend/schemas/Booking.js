@@ -48,9 +48,10 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         enum: {
             values: ["IN_PROGRESS", "CONFIRMED", "CANCELLED"],
-            default: "IN_PROGRESS",
             message: "Status can only be IN_PROGRESS, CONFIRMED or CANCELLED"
-        }
+        },
+        default: "IN_PROGRESS",
+        required: true
     }
 
 

@@ -10,6 +10,7 @@ import userRoute from "./routes/userRoute.js"
 import cookieParser from "cookie-parser";
 import bookingRoute from "./routes/bookingRoute.js";
 import showRoute from "./routes/showRoute.js";
+import paymentRoute from "./routes/paymentRoute.js";
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/mba/api/v1/auth', authRoute);
 app.use('/mba/api/v1/user', userRoute);
 app.use('/mba/api/v1/shows', showRoute);
 app.use('/mba/api/v1/booking', bookingRoute);
+app.use('/mba/api/v1/payment', paymentRoute);
 
 app.get('/', (req, res) => {
     res.json({

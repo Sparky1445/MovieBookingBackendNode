@@ -1,10 +1,6 @@
 import Movie from "../schemas/Movie.js";
 import NotFoundError from "../errors/NotFound.js";
-import InternalServerError from "../errors/InternalServerError.js";
-import BadRequest from "../errors/badRequest.js";
 import mongoose from "mongoose";
-import { success } from "zod";
-import Theatre from "../schemas/Theatre.js";
 
 export const createMovie = async (movieData) => {
     try {

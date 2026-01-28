@@ -1,32 +1,18 @@
 import Booking from "../schemas/Booking.js";
 import { createPayment as createPaymentRepo } from "./paymentRepo.js";
+import BadRequestError from "../errors/badRequest.js";
+import InternalServerError from "../errors/InternalServerError.js";
+import NotFoundError from "../errors/notFound.js";
 
 export const createBooking = async (bookingDetails) => {
     try {
         const booking = await Booking.create(bookingDetails);
 
         if (!booking) {
-            throw new Error("Booking not created ~ Repo Layer Error");
+            throw new InternalServerError("Booking not created!!");
         }
 
-        const payment = await createPaymentRepo({
-            bookingId: booking._id,
-            userId: booking.userId,
-            amount: booking.totalCost,
-            status: "success"
-        })
 
-
-        if (!payment) {
-            booking.status = "CANCELLED";
-            await booking.save();
-
-            throw new InternalServerError("Failed to create Payment for the booking ~ Repo Layer Error");
-        }
-
-        booking.paymentId = payment.data._id;
-        booking.status = "CONFIRMED";
-        await booking.save();
 
         return {
             data: booking,

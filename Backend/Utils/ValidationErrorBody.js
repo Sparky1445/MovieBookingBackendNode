@@ -1,4 +1,5 @@
 export const ValidationErrorBody = (res, error, statusCode) => {
+    console.log(error);
 
     const parsed = JSON.parse(error);
     const ErrArray = parsed.map((errObj) => ({
