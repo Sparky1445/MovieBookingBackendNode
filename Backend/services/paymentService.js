@@ -4,6 +4,12 @@ import Booking from "../schemas/Booking.js";
 import Show from "../schemas/Show.js";
 import BadRequestError from "../errors/badRequest.js";
 import InternalServerError from "../errors/InternalServerError.js";
+import { sendEmail } from "./emailService.js";
+import Movie from "../schemas/Movie.js";
+import Theatre from "../schemas/Theatre.js";
+import User from "../schemas/User.js";
+
+
 export const getPayments = async (userId) => {
     return ServiceLayerBody(getPaymentsRepo, userId);
 }
@@ -13,6 +19,9 @@ export const createPayment = async (paymentData) => {
     try {
         const booking = await Booking.findById(paymentData.bookingId);
         const show = await Show.findById(booking.showId);
+        const movie = await Movie.findById(booking.movieId);
+        const theatre = await Theatre.findById(booking.theatreId);
+        const user = await User.findById(booking.userId);
 
 
         if (booking.status == "CONFIRMED" || booking.status == "CANCELLED") {
@@ -32,6 +41,8 @@ export const createPayment = async (paymentData) => {
         if (minutes > 5) {
             booking.status = 'CANCELLED';
             await booking.save();
+
+            sendEmail("Booking has been cancelled", `Your booking for the movie ${movie.name} in ${theatre.name} on ${show.showDate} at ${show.showTime} for ${cancelBooking.noOfSeats} seats[${cancelBooking.seats.map((seat) => seat).join(",")}] has been cancelled due to late payment!! Kindly book again`, user.email);
 
             show.noOfSeats += booking.noOfSeats;
             await show.save();

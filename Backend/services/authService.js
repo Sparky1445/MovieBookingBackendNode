@@ -9,6 +9,7 @@ import { ServiceLayerBody } from "../Utils/ServiceLayerBody.js"
 import BadRequestError from "../errors/badRequest.js";
 import { signup as signupRepository } from "../repositories/userRepo.js"
 import mongoose from "mongoose";
+import { sendEmail } from "../services/emailService.js";
 
 
 export const signup = async (userData) => {
@@ -44,6 +45,8 @@ export const login = async (authDetails) => {
     }, JWT_SECRET, {
         expiresIn: '1h'
     })
+
+    sendEmail("Signin Alert!", `Hello ${user.firstName + " " + user.lastName}, You have successfully logged in to CinePlix! If this was not you, please contact us at support@cineplix.com`, user.email);
 
     return token;
 

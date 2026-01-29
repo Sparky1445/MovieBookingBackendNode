@@ -4,7 +4,6 @@ import SuccessBody from "../Utils/SuccessBody.js";
 import ErrorBody from "../Utils/ErrorBody.js";
 import { getPayments as getPaymentsService, createPayment as createPaymentService } from "../services/paymentService.js";
 import Booking from "../schemas/Booking.js";
-import BadRequestError from "../errors/badRequest.js";
 import mongoose from "mongoose";
 
 export const getPayments = async (req, res) => {

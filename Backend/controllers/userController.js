@@ -3,6 +3,8 @@ import SuccessBody from "../Utils/SuccessBody.js";
 import { getUserByEmail as getUserByEmailService } from "../services/userService.js"
 import { getUserById as getUserByIdService } from "../services/userService.js"
 import { updateUser as updateUserService } from "../services/userService.js"
+import jwt from "jsonwebtoken";
+import UnauthorizedError from "../errors/Unauthorized.js";
 
 
 export const getUserByEmail = async (req, res) => {
@@ -40,6 +42,14 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     try {
+        const token = req.cookies?.authToken;
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (decodedToken.userId != req.params.userId && decodedToken.role != "ADMIN") {
+            throw new UnauthorizedError("Unauthorized");
+        }
+
+
         const response = await updateUserService(req.params.userId, req.body);
 
         if (response.success) {

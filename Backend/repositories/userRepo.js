@@ -2,6 +2,7 @@ import { success } from "zod";
 import BadRequestError from "../errors/badRequest.js";
 import User from "../schemas/User.js";
 import mongoose from "mongoose";
+import { sendEmail } from "../services/emailService.js";
 
 export const signup = async (userData) => {
     try {
@@ -10,6 +11,8 @@ export const signup = async (userData) => {
         if (!user) {
             throw new BadRequestError("Failed to create User!Try again");
         }
+
+        sendEmail("Welcome to CinePlix", `Hello ${user.firstName + " " + user.lastName}, Welcome to CinePlix! The most trusted platform for movie booking and premium Movie experience! For the best movie experience, download the CinePlix app now and get upto 50% discount on your first booking!`, user.email);
 
         return {
             success: true,
@@ -90,6 +93,11 @@ export const updateUser = async (userId, data) => {
         if (!user) {
             throw new BadRequestError("No User found with the given ID!");
         }
+
+        sendEmail("User updated successfully!", `Your user profile has been updated successfully!
+            The updated data is as follows:
+            ${JSON.stringify(data)}.
+            If this was not you, please contact us at support@cineplix.com`, user.email);
 
         return {
             success: true,
