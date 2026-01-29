@@ -1,9 +1,11 @@
 import NotFoundError from "../errors/NotFound.js";
 import InternalServerError from "../errors/InternalServerError.js";
+import BadRequestError from "../errors/badRequest.js";
 import Payment from "../schemas/Payment.js";
 import Booking from "../schemas/Booking.js";
 import mongoose from "mongoose";
 import User from "../schemas/User.js"
+import Show from "../schemas/Show.js"
 
 export const getPayments = async (userId) => {
     try {
@@ -48,49 +50,30 @@ export const getPayments = async (userId) => {
 
 export const createPayment = async (paymentData) => {
     try {
+        const booking = await Booking.findById(paymentData.bookingId);
+        const show = await Show.findById(booking.showId);
+
         const payment = await Payment.create(paymentData);
 
         if (!payment) {
 
-            const booking = await Booking.findById(paymentData.bookingId);
             booking.status = "CANCELLED";
             await booking.save();
+
+            show.noOfSeats += booking.noOfSeats;
+            await show.save();
 
             throw new InternalServerError("Failed to create payment");
         }
 
 
-        const booking = await Booking.findById(paymentData.bookingId);
-
-        if (booking.status == "CONFIRMED" || booking.status == "CANCELLED") {
-            throw new InternalServerError("Cant make new payment against this booking!");
-        }
-
-        let bookingTime = booking.createdAt;
-        let currentTime = Date.now();
-
-        let minutes = Math.floor(((currentTime - bookingTime) / 1000) / 60);
-
-        if (minutes > 5) {
-            booking.status = 'CANCELLED';
-            await booking.save();
-
-            throw new BadRequestError("Booking time expired!!!");
-
-        }
+        payment.status = "success";
+        await payment.save();
 
         if (booking.status == "IN_PROGRESS" && booking.totalCost == payment.amount) {
             booking.status = "CONFIRMED";
             await booking.save();
         }
-
-
-
-
-
-        payment.status = "success";
-        await payment.save();
-
 
         return {
             success: true,

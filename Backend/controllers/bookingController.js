@@ -20,20 +20,19 @@ export const createBooking = async (req, res) => {
         const token = req.cookies.authToken;
         const decodedToken = jwt.verify(token, JWT_SECRET);
 
-        let { totalCost, noOfSeats, seats, theatreId, movieId, ...omittedBody } = req.body;
+        let { noOfSeats, seats, theatreId, movieId, ...omittedBody } = req.body;
 
-        const show = await Show.findById(omittedBody.showId, { showTime: 1 });
-        console.log(show);
+        const show = await Show.findById(omittedBody.showId, { showTime: 1, ticketPrice: 1 });
 
         if (!show) {
             throw new NotFoundError("Show not found");
         }
 
-        totalCost = parseInt(totalCost);
-        const timing = show.showTime;
-        console.log(timing);
-
         noOfSeats = parseInt(noOfSeats);
+        console.log(show.ticketPrice);
+        const totalCost = parseInt(show.ticketPrice) * noOfSeats;
+        const timing = show.showTime;
+
         seats = seats.split(",").map((seat) => seat.trim());
         movieId = new mongoose.Types.ObjectId(movieId);
         theatreId = new mongoose.Types.ObjectId(theatreId);
@@ -81,12 +80,12 @@ export const updateBooking = async (req, res) => {
 
 export const cancelBooking = async (req, res) => {
     try {
-        const theatreId = await Booking.findById(req.params.id, { userId: 1 });
+        const bookingId = await Booking.findById(req.params.id, { userId: 1 });
         const token = jwt.verify(req.cookies.authToken, JWT_SECRET);
         const id = req.params.id;
-        console.log(id, theatreId.userId.toString(), token.userId);
+        console.log(id, bookingId.userId.toString(), token.userId);
 
-        if (token.userId !== theatreId.userId.toString()) {
+        if (token.userId !== bookingId.userId.toString()) {
             throw new UnauthorizedError("you are not allowed to cancel this booking!!!");
         }
 

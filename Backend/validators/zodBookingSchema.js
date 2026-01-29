@@ -8,7 +8,7 @@ const bookingSchema = z.object({
     timing: z.string().optional(),
     seats: z.array(z.string()).min(1, "At least one seat is required"),
     noOfSeats: z.number().min(1, "At least one seat is required"),
-    totalCost: z.number().min(0, "Total cost cannot be negative"),
+    totalCost: z.number().optional(),
     status: z.enum(["IN_PROGRESS", "CONFIRMED", "CANCELLED"], { default: "IN_PROGRESS", message: "Status can only be IN_PROGRESS, CONFIRMED or CANCELLED" }).optional()
 })
 

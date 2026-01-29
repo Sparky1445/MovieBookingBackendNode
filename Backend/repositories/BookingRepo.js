@@ -3,6 +3,7 @@ import { createPayment as createPaymentRepo } from "./paymentRepo.js";
 import BadRequestError from "../errors/badRequest.js";
 import InternalServerError from "../errors/InternalServerError.js";
 import NotFoundError from "../errors/notFound.js";
+import Show from "../schemas/Show.js";
 
 export const createBooking = async (bookingDetails) => {
     try {
@@ -12,7 +13,9 @@ export const createBooking = async (bookingDetails) => {
             throw new InternalServerError("Booking not created!!");
         }
 
-
+        const show = await Show.findById(booking.showId);
+        show.noOfSeats -= booking.noOfSeats;
+        await show.save();
 
         return {
             data: booking,
@@ -58,12 +61,23 @@ export const updateBooking = async (bookingId, status) => {
 
 export const cancelBooking = async (bookingId) => {
     try {
+
+        const booking = await Booking.findById(bookingId);
+
+        if (booking.status == "CANCELLED") {
+            throw new BadRequestError("The Booking is already cancelled!Thank you");
+        }
+
         const cancelBooking = await Booking.findByIdAndUpdate(bookingId, { status: "CANCELLED" }, { new: true });
 
 
         if (!cancelBooking) {
             throw new NotFoundError("No Booking found with the given ID");
         }
+
+        const show = await Show.findById(cancelBooking.showId);
+        show.noOfSeats += cancelBooking.noOfSeats;
+        await show.save();
 
         return {
             data: cancelBooking,

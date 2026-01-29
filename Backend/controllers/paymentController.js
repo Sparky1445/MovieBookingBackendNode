@@ -45,7 +45,6 @@ export const createPayment = async (req, res) => {
         console.log(token);
 
         const booking = (token.role === 'ADMIN' || token.role === 'CLIENT') ? await Booking.findById(req.body.bookingId) : await Booking.find({ _id: req.body.bookingId, userId: token.userId });
-        console.log(booking);
 
         if (!booking) {
             return ErrorBody(res, "Booking not found!!!", 404);

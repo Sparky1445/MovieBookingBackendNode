@@ -11,6 +11,7 @@ import { getBookings as getBookingsRepository } from "../repositories/BookingRep
 import { getBookingsByData as getBookingsByDataRepository } from "../repositories/BookingRepo.js";
 
 export const createBooking = async (bookingDetails) => {
+
     try {
 
         const checkMovie = await Theatre.find({ _id: bookingDetails.theatreId, movies: { $in: bookingDetails.movieId } })
@@ -49,6 +50,8 @@ export const createBooking = async (bookingDetails) => {
         if (bookedSeatsIssue.length > 0) {
             throw new BadRequestError(`Seats ${bookedSeatsIssue.join(", ")} are already booked!`);
         }
+
+
 
 
 
