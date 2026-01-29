@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import NotFoundError from "../errors/NotFound.js";
 import BadRequestError from "../errors/badRequest.js";
 import InternalServerError from "../errors/InternalServerError.js";
+import { sendEmail } from "../services/emailService.js";
 
 
 
@@ -10,9 +11,12 @@ export const createTheatre = async (theatreData) => {
     try {
         const theatre = await Theatre.create(theatreData);
 
+
         if (!theatre) {
             throw new BadRequestError("Failed to create theatre");
         }
+
+        sendEmail("Theatre created successfully!", `Hello ${theatre.name}, Welcome to CinePlix! The most trusted platform for movie booking and premium Movie experience! For the best movie experience, download the CinePlix app now and get upto 50% discount on your first booking!`, theatre.email);
 
         return {
             success: true,

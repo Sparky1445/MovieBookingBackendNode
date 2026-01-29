@@ -13,7 +13,7 @@ import theatreSchema from "../validators/zodTheatreSchema.js";
 import { isAdminOrClient } from "../validators/authValidator.js";
 const Router = express.Router();
 
-Router.post("/", isLoggedIn, isAdmin, validateTheatre(theatreSchema), createTheatreController);
+Router.post("/", isLoggedIn, isAdminOrClient, validateTheatre(theatreSchema), createTheatreController);
 Router.get("/:id", isLoggedIn, getTheatreController);
 Router.get("/", isLoggedIn, getAllTheatresController);
 Router.delete("/:id", isLoggedIn, isAdmin, deleteTheatreController);
