@@ -31,13 +31,14 @@ html, body, #root {
   gap: 20px;
 }
 
-.header .header-right .header-SignIn {
-  font-size: 18px;
+.header .header-right .button-SignIn {
+  font-size: 16px;
   background-color: #e50914;
   color: white;
   margin: 10px;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
   font-family: 'Netflix Sans', sans-serif;
 }
 
