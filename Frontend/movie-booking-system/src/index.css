@@ -37,3 +37,13 @@
   border-radius: 50%;
   cursor: pointer;
 }
+
+.nav{
+  background-color: black;
+  color:white;
+  text-align: center;
+  word-spacing: 80px;
+  padding: 10px;
+  margin: 0%;
+  font-size: 18px;
+}
