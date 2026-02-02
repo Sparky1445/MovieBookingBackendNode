@@ -42,6 +42,18 @@ html, body, #root {
   font-family: 'Netflix Sans', sans-serif;
 }
 
+.header .header-right .button-SignIn:hover{
+  font-size: 16px;
+  background-color: #e50914;
+  color: black;
+  margin: 10px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  font-family: 'Netflix Sans', sans-serif;
+}
+
+
 .profile-logo {
   height: 30px;
   border-radius: 50%;
